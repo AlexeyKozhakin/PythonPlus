@@ -118,35 +118,35 @@ def change_dir():
     os.chdir(name)
 
     
-
-while True:
-    choice = menu()
-    if choice == '1':
-        create_folder()
-    if choice == '2':
-        delete_folder()
-    if choice == '3':
-        copy_folder()
-    if choice == '4':
-        show_folder()
-    if choice == '5':
-        show_folders()
-    if choice == '6':
-        show_files()
-    if choice == '7':
-        os_info()
-    if choice == '8':
-        author_info()
-    if choice == '9':
-        # Запуск программы из соседнего модуля
-        subprocess.run(["python", "../9/victori.py"])
-    if choice == '10':
-        # Запуск программы из соседнего модуля
-        subprocess.run(["python", "../10/use_functions.py"])
-    if choice == '11':
-        change_dir()
-    if choice == '12':
-        break
+if __name__ == "__main__":
+    while True:
+        choice = menu()
+        if choice == '1':
+            create_folder()
+        if choice == '2':
+            delete_folder()
+        if choice == '3':
+            copy_folder()
+        if choice == '4':
+            show_folder()
+        if choice == '5':
+            show_folders()
+        if choice == '6':
+            show_files()
+        if choice == '7':
+            os_info()
+        if choice == '8':
+            author_info()
+        if choice == '9':
+            # Запуск программы из соседнего модуля
+            subprocess.run(["python", "../9/victori.py"])
+        if choice == '10':
+            # Запуск программы из соседнего модуля
+            subprocess.run(["python", "../10/use_functions.py"])
+        if choice == '11':
+            change_dir()
+        if choice == '12':
+            break
         
 
 
