@@ -34,6 +34,25 @@
 Для реализации основного меню можно использовать пример ниже или написать свой
 """
 
+"""
+1. В подпрограмме Мой банковский счет;
+2. Добавить сохранение суммы счета в файл. 
+ 
+При первом открытии программы на счету 0
+После того как мы воспользовались программой и вышли сохранить сумму счета 
+При следующем открытии программы прочитать сумму счета, которую сохранили
+...
+3. Добавить сохранение истории покупок в файл
+ 
+При первом открытии программы истории нет.
+После того как мы что нибудь купили и закрыли программу сохранить историю покупок.
+При следующем открытии программы прочитать историю и новые покупки уже добавлять к ней;
+...
+4. Формат сохранения количество файлов и способ можно выбрать самостоятельно.
+"""
+import json
+import os
+
 def show_menu():
     print('1. пополнение счета')
     print('2. покупка')
@@ -62,9 +81,26 @@ def shop(count, history):
 def show_history(history):
     for item, price in history.items():
         print(f'{item}\t{price}') 
+        
+def load_data():
+    if os.path.isfile("data.json"):
+        # Чтение данных из файла в формате JSON
+        with open('data.json', 'r') as json_file:
+            data = json.load(json_file)
+        return data    
+    else:
+        data = {'count':0,
+                'history':{}}                
+        return data
+        
+def save_history(data):
+    with open('data.json', 'w') as json_file:
+        json.dump(data, json_file)
 
-count = 0
-history={}
+#==== Начало работы программы =========
+data = load_data()
+count = data['count']
+history = data['history']
 while True:
     choice = show_menu()
     if choice == '1':
@@ -74,6 +110,9 @@ while True:
     elif choice == '3':
         show_history(history)
     elif choice == '4':
+        data['count']=count
+        data['history']=history
+        save_history(data)    
         break
     else:
         print('Неверный пункт меню')
