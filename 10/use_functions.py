@@ -50,32 +50,69 @@
 ...
 4. Формат сохранения количество файлов и способ можно выбрать самостоятельно.
 """
+
+#14 Генераторы, тернарные операторы, исключения, декораторы
+"""
+0. В проекте ""Консольный файловый менеджер"" перейти на новую ветку для добавления нового функционала;
++1. Где это возможно переписать код с использованием генераторов и тернарных операторов;
++2. Там где возможны исключительные ситуации добавить обработку исключений;
++3. *Где это возможно применить декораторы.
+Иногда может быть так, что применить новые возможности негде, особенно декораторы - это нормально.
+ 
+ДОПОЛНИТЕЛЬНО:
+Написать тесты для всех новых функций в проекте.
+4. Создать pull request на объединение веток master и новой ветки, прислать ссылку на pull request как решение дз"
+"""
+
 import json
 import os
 
+def decorator(func):
+    def wrapper():
+        print("*" * 50)    
+        choice = func()
+        print("=" * 50)
+        return choice
+    return wrapper
+@decorator
 def show_menu():
-    print('1. пополнение счета')
-    print('2. покупка')
-    print('3. история покупок')
-    print('4. выход')
+    menu = ['1. пополнение счета',
+            '2. покупка',
+            '3. история покупок',
+            '4. выход']
+    ps = [print(a) for a in menu]
+    for p in ps:
+        p
+    
     choice = input('Выберите пункт меню: ')
     return choice
+
 def top_up(count):
-    amount = int(input('Введите сумму пополниния счета:'))
+    input_flag=True
+    while input_flag:
+        try:
+            amount = int(input('Введите сумму пополниния счета:'))
+            input_flag = False
+        except:
+            print('Некорректный ввод') 
     count+=amount
     print(f'Текущий счет: {count}')
     return count
+
 def shop(count, history):
-    price = int(input('Введите сумму покупки: '))
+    input_flag=True
+    while input_flag:
+        try:
+            price = int(input('Введите сумму покупки: '))
+            input_flag = False
+        except:
+            print('Некорректный ввод')
     if price > count:
         print('Денег не хватает')
     else:
         count-=price
         item = input('Введите название покупки: ')
-        if item in history:
-            history[item]+=price
-        else:
-            history[item]=price
+        history[item]=price+history[item] if item in history else price    
     return count, history    
 
 def show_history(history):
