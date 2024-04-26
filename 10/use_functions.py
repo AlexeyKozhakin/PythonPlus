@@ -34,37 +34,110 @@
 Для реализации основного меню можно использовать пример ниже или написать свой
 """
 
+"""
+1. В подпрограмме Мой банковский счет;
+2. Добавить сохранение суммы счета в файл. 
+ 
+При первом открытии программы на счету 0
+После того как мы воспользовались программой и вышли сохранить сумму счета 
+При следующем открытии программы прочитать сумму счета, которую сохранили
+...
+3. Добавить сохранение истории покупок в файл
+ 
+При первом открытии программы истории нет.
+После того как мы что нибудь купили и закрыли программу сохранить историю покупок.
+При следующем открытии программы прочитать историю и новые покупки уже добавлять к ней;
+...
+4. Формат сохранения количество файлов и способ можно выбрать самостоятельно.
+"""
+
+#14 Генераторы, тернарные операторы, исключения, декораторы
+"""
+0. В проекте ""Консольный файловый менеджер"" перейти на новую ветку для добавления нового функционала;
++1. Где это возможно переписать код с использованием генераторов и тернарных операторов;
++2. Там где возможны исключительные ситуации добавить обработку исключений;
++3. *Где это возможно применить декораторы.
+Иногда может быть так, что применить новые возможности негде, особенно декораторы - это нормально.
+ 
+ДОПОЛНИТЕЛЬНО:
+Написать тесты для всех новых функций в проекте.
+4. Создать pull request на объединение веток master и новой ветки, прислать ссылку на pull request как решение дз"
+"""
+
+import json
+import os
+
+def decorator(func):
+    def wrapper():
+        print("*" * 50)    
+        choice = func()
+        print("=" * 50)
+        return choice
+    return wrapper
+@decorator
 def show_menu():
-    print('1. пополнение счета')
-    print('2. покупка')
-    print('3. история покупок')
-    print('4. выход')
+    menu = ['1. пополнение счета',
+            '2. покупка',
+            '3. история покупок',
+            '4. выход']
+    ps = [print(a) for a in menu]
+    for p in ps:
+        p
+    
     choice = input('Выберите пункт меню: ')
     return choice
+
 def top_up(count):
-    amount = int(input('Введите сумму пополниния счета:'))
+    input_flag=True
+    while input_flag:
+        try:
+            amount = int(input('Введите сумму пополниния счета:'))
+            input_flag = False
+        except:
+            print('Некорректный ввод') 
     count+=amount
     print(f'Текущий счет: {count}')
     return count
+
 def shop(count, history):
-    price = int(input('Введите сумму покупки: '))
+    input_flag=True
+    while input_flag:
+        try:
+            price = int(input('Введите сумму покупки: '))
+            input_flag = False
+        except:
+            print('Некорректный ввод')
     if price > count:
         print('Денег не хватает')
     else:
         count-=price
         item = input('Введите название покупки: ')
-        if item in history:
-            history[item]+=price
-        else:
-            history[item]=price
+        history[item]=price+history[item] if item in history else price    
     return count, history    
 
 def show_history(history):
     for item, price in history.items():
         print(f'{item}\t{price}') 
+        
+def load_data():
+    if os.path.isfile("data.json"):
+        # Чтение данных из файла в формате JSON
+        with open('data.json', 'r') as json_file:
+            data = json.load(json_file)
+        return data    
+    else:
+        data = {'count':0,
+                'history':{}}                
+        return data
+        
+def save_history(data):
+    with open('data.json', 'w') as json_file:
+        json.dump(data, json_file)
 
-count = 0
-history={}
+#==== Начало работы программы =========
+data = load_data()
+count = data['count']
+history = data['history']
 while True:
     choice = show_menu()
     if choice == '1':
@@ -74,6 +147,9 @@ while True:
     elif choice == '3':
         show_history(history)
     elif choice == '4':
+        data['count']=count
+        data['history']=history
+        save_history(data)    
         break
     else:
         print('Неверный пункт меню')
